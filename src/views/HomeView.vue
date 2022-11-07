@@ -7,50 +7,75 @@
       <a class="navbar-brand" href="#">Online Survey Form</a>
       <ul class="nav nav-pills">
         <li class="nav-item">
+          <a class="nav-link" href="#survey">survey</a>
+        </li>
+        <li class="nav-item chart">
           <a class="nav-link" href="#one">one</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item chart">
           <a class="nav-link" href="#two">two</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item chart">
           <a class="nav-link" href="#three">three</a>
         </li>
       </ul>
     </nav>
-    <div id="content" data-spy="scroll" data-target="#navbar-example2" data-offset="0">
-      <h4 id="one">one</h4>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
-      <h4 id="two">two</h4>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
-      <h4 id="three">three</h4>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
-      <p>...</p>
+    <div id="content">
+
+
+      <div id="survey" class="row justify-content-md-center section">
+        <div class="col col-lg-8">
+          <div class="card">
+            <div class="card-header text-center">
+              survey
+            </div>
+            <div class="card-body text-start">
+
+              <fieldset class="form-group mb-3">
+                <div class="row">
+                  <legend class="col-form-label col-sm-3 pt-0">Gender</legend>
+                  <div class="col-sm-9">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="gender" id="gridRadios1" value="m" checked>
+                      <label class="form-check-label" for="gridRadios1">Male</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="gender" id="gridRadios2" value="f">
+                      <label class="form-check-label" for="gridRadios2">Female</label>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+              <div class="form-group row mb-3">
+                <label for="inputEmail3" class="col-sm-3 col-form-label">Experience (years)</label>
+                <div class="col-sm-9">
+                  <input type="number" class="form-control" id="experience" min="0" max="100">
+                </div>
+              </div>
+              <div class="form-group row mb-3">
+                <div class="col-sm-3">Preferred language</div>
+                <div class="col-sm-9">
+                  <select class="form-control" name="langauge">
+                    <option>JavaScript</option>
+                    <option>JavaScript</option>
+                    <option>JavaScript</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row mb-3">
+                <div class="col-sm-10">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+              </div>
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
     </div>
 
   </div>
@@ -69,6 +94,7 @@ nav.navbar {
   background-color:lightsteelblue !important;
   border-top: 12px solid rgb(32,32,32);
   color: rgb(32,32,32);
+  z-index: 100;
 }
 
 h1 {
@@ -83,7 +109,6 @@ h1 {
   font-weight: 700;
   opacity: 0.8;
   margin-bottom: 0;
-  
 }
 
 #content {
@@ -91,7 +116,9 @@ h1 {
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
   padding: 30px;
-  margin-bottom: 20px;
+  margin-bottom: 20px;  
+  
+  min-height: 40rem;
 }
 
 .container {
@@ -102,8 +129,26 @@ h1 {
   box-shadow: 0px 0px 25px 0px rgba(0,0,0,0.35);
   -webkit-box-shadow: 0px 0px 25px 0px rgba(0,0,0,0.35);
   -moz-box-shadow: 0px 0px 25px 0px rgba(0,0,0,0.35);
-
 }
+
+.question {
+  min-height: 35rem;
+}
+
+.section {
+  padding-top: 80px;
+}
+
+.card-header {
+  font-variant: small-caps;
+}
+
+.chart {
+  display: none;
+}
+
+
+
 
 </style>
 
