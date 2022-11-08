@@ -71,6 +71,54 @@
                   </select>
                 </div>
               </div>
+              
+              <div class="form-group row mb-3">
+                <label for="inputEmail3" class="col-sm-3 col-form-label">Familiarity with Windows</label>
+                <div class="col-sm-9">
+                  <div class="input-group row">
+                    <div class="col-sm-3 text-end d-none d-sm-block">Poor</div>
+                    <div class="col-sm-6">
+                      <input type="range" class="form-range" min="0" max="5" id="windows" name="windows">
+                    </div>
+                    <div class="col-sm-3 text-start d-none d-sm-block">Excellent</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-group row mb-3">
+                <label for="inputEmail3" class="col-sm-3 col-form-label">Familiarity with Linux</label>
+                <div class="col-sm-9">
+                  <div class="input-group row">
+                    <div class="col-sm-3 text-end d-none d-sm-block">Poor</div>
+                    <div class="col-sm-6">
+                      <input type="range" class="form-range" min="0" max="5" id="windows" name="linux">
+                    </div>
+                    <div class="col-sm-3 text-start d-none d-sm-block">Excellent</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-group row mb-3">
+                <label for="inputEmail3" class="col-sm-3 col-form-label">Familiarity with MacOS</label>
+                <div class="col-sm-9">
+                  <div class="input-group row">
+                    <div class="col-sm-3 text-end d-none d-sm-block">Poor</div>
+                    <div class="col-sm-6">
+                      <input type="range" class="form-range" min="0" max="5" id="windows" name="macos">
+                    </div>
+                    <div class="col-sm-3 text-start d-none d-sm-block">Excellent</div>
+                  </div>
+                </div>
+              </div>
+
+              <datalist id="tickmarks">
+                <option value="0"></option>
+                <option value="25"></option>
+                <option value="50"></option>
+                <option value="75"></option>
+                <option value="100"></option>
+              </datalist>
+
               <div class="form-group row mb-3">
                 <div class="col-sm-6 text-start">
                   <button class="btn btn-primary" @click="submitData">Submit Data & View Charts</button>
@@ -132,8 +180,9 @@
               chart three
             </div>
             <div class="card-body text-start">
-
-
+              <div id="chart">
+                <apexchart type="radar" height="500" :options="options3" :series="series3"></apexchart>
+              </div>
             </div>
           </div>
         </div>
@@ -244,6 +293,8 @@ const options1 = ref({});
 const series1 = ref([]);
 const options2 = ref({});
 const series2 = ref([]);
+const options3 = ref({});
+const series3 = ref([]);
 
 export default {
   name: 'HomeView',
@@ -266,7 +317,10 @@ export default {
           body: JSON.stringify({
               gender : document.querySelector('input[name="gender"]:checked').value,
               experience : document.querySelector('input[name="experience"]').value,
-              language : document.querySelector('select[name="language"]').value
+              language : document.querySelector('select[name="language"]').value,
+              windows : document.querySelector('input[name="windows"]').value,
+              linux : document.querySelector('input[name="linux"]').value,
+              macos : document.querySelector('input[name="macos"]').value
           })
       })
       .then(function (response) {
@@ -292,6 +346,7 @@ export default {
     loadCharts() {
       this.loadChartLanguage(false);
       this.loadChartExperience(false);
+      this.loadChartFamiliarity(false);
     },
 
     async loadChartLanguage(update) {
@@ -341,14 +396,38 @@ export default {
           }
         };
       }
+    },
+
+
+    async loadChartFamiliarity() {
+      var response3 = await fetch("/api/chart/familiarity/");
+
+      if (response3.ok) {
+        var familiarity = await response3.json();
+        console.log(familiarity);
+        options3.value = { 
+          series: [{
+            name: 'Familiarity',
+            data: [familiarity[0].Windows, familiarity[0].Linux, familiarity[0].MacOS]
+          }],
+          xaxis: {
+            categories: ["Windows", "Linux", "MacOS"]
+          },
+          title: {
+              text: 'Familiarity with Different Operating Systems Among Surveyed Users'
+          }
+        };
+      }
     }
+
+
   },
 
 
 
   setup() {
       return {
-        options1, series1, options2, series2
+        options1, series1, options2, series2, options3, series3
       }
   }
 }
