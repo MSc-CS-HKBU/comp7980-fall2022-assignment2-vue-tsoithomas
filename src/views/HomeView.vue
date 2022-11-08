@@ -4,7 +4,7 @@
   <div class="container">
 
     <nav id="navbar-example2" class="navbar navbar-light bg-light">
-      <a class="navbar-brand" href="#">Online Survey Form</a>
+      <a class="navbar-brand" href="#">Programmer Survey Form</a>
       <ul class="nav nav-pills">
         <li class="nav-item">
           <a class="nav-link" href="#survey">survey</a>
@@ -50,7 +50,7 @@
                 <label for="inputEmail3" class="col-sm-3 col-form-label">Experience (years)</label>
                 <div class="col-sm-9">
                   <div class="input-group">
-                    <input type="number" class="form-control" name="experience" id="experience" min="0" max="100" placeholder="1" aria-describedby="basic-addon2">
+                    <input type="number" class="form-control" name="experience" id="experience" min="0" max="100" placeholder="1" aria-describedby="basic-addon2" required>
                     <div class="input-group-append">
                       <div class="input-group-text" id="basic-addon2">year(s)</div>
                     </div>
@@ -60,7 +60,7 @@
               <div class="form-group row mb-3">
                 <div class="col-sm-3">Preferred language</div>
                 <div class="col-sm-9">
-                  <select class="form-control form-select" name="language">
+                  <select class="form-control form-select" name="language" required>
                     <option value="" disabled selected>Select your preferred language</option>
                     <option>C++</option>
                     <option>Java</option>
@@ -72,8 +72,11 @@
                 </div>
               </div>
               <div class="form-group row mb-3">
-                <div class="col-sm-10">
-                  <button type="submit" class="btn btn-primary" @click="myMethod">Submit Data & View Charts</button>
+                <div class="col-sm-6 text-start">
+                  <button class="btn btn-primary" @click="submitData">Submit Data & View Charts</button>
+                </div>
+                <div class="col-sm-6 text-end">
+                  <button class="btn btn-secondary" @click="loadCharts">View Charts Only</button>
                 </div>
               </div>
             </div>
@@ -91,7 +94,15 @@
               chart one
             </div>
             <div class="card-body text-start">
+              <select class="form-control form-select mb-3" name="filter" @change="loadChartLanguage(true)">
+                <option value="a">Both Genders</option>
+                <option value="m">Male only</option>
+                <option value="f">Female only</option>
+              </select>
 
+              <div>
+                  <apexchart width="500" type="donut" :options="options1" :series="series1"></apexchart>
+              </div>
 
             </div>
           </div>
@@ -106,8 +117,9 @@
               chart two
             </div>
             <div class="card-body text-start">
-
-
+              <div id="chart">
+                <apexchart type="bar" height="500" :options="options2" :series="series2"></apexchart>
+              </div>
             </div>
           </div>
         </div>
@@ -217,8 +229,6 @@ h1 {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
-
-
 </style>
 
 
@@ -230,6 +240,11 @@ h1 {
 //import HomeForm from '@/components/HomeForm.vue'
 import { ref } from "vue";
 
+const options1 = ref({});
+const series1 = ref([]);
+const options2 = ref({});
+const series2 = ref([]);
+
 export default {
   name: 'HomeView',
   components: {
@@ -237,7 +252,7 @@ export default {
   },
   
   methods: {
-    myMethod () {
+     submitData () {
       var fetch_status;
 
       fetch('/api/submit', {
@@ -272,15 +287,68 @@ export default {
           // Catch errors
           console.log(error);
       }); 
+    },
+
+    loadCharts() {
+      this.loadChartLanguage(false);
+      this.loadChartExperience(false);
+    },
+
+    async loadChartLanguage(update) {
+      var filter = document.querySelector('select[name="filter"]').value;
+      
+      var response1 = await fetch("/api/chart/language/" + filter);
+
+      if (response1.ok) {
+        var language = await response1.json();
+        series1.value = language.map(a => a.count);
+
+        if (update != true) {
+          options1.value = { 
+            labels: language.map(a => a._id),
+            title: {
+              text: "Surveyed Users' Preferred Language"
+            },
+          };
+        }
+      }
+    },
+
+    async loadChartExperience() {
+      var response2 = await fetch("/api/chart/experience/");
+
+      if (response2.ok) {
+        var experience = await response2.json();
+        options2.value = { 
+          series: [{
+            name: 'Experience',
+            data: experience.map(a => a.count)
+          }],
+          xaxis: {
+            title: {
+              text: 'Experience (years)'
+            },
+            categories: experience.map(a => (a._id*5).toString() +"-"+(a._id*5+4).toString())
+          },
+          yaxis: {
+            title: {
+              text: 'Number of users'
+            }
+          },
+          title: {
+              text: 'Experience of Surveyed Users',
+              align: 'center',
+          }
+        };
+      }
     }
   },
 
-  setup() {
-      const booking = ref({});
-      
 
+
+  setup() {
       return {
-          booking
+        options1, series1, options2, series2
       }
   }
 }

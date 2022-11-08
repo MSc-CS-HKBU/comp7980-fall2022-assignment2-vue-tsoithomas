@@ -8,3 +8,4 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js"
 import router from './router'
 
 createApp(App).use(router).use(VueApexCharts).mount('#app')
+
