@@ -333,6 +333,8 @@ export default {
 
         if (response.ok) {
           this.loadCharts();
+          document.querySelector('input[name="experience"]').value = "";
+          document.querySelector('select[name="language"]').value = "";
           location.hash = "#one";
         }
 
@@ -349,7 +351,7 @@ export default {
 
         const nodeList = document.querySelectorAll('.chart');
         for (let i = 0; i < nodeList.length; i++) {
-          nodeList[i].style.display = "block";
+          nodeList[i].style.display = "flex";
         }
         
     },
