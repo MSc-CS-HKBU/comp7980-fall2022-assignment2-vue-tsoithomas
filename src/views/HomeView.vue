@@ -1,7 +1,7 @@
 <template>
   <h1 name="">COMP7270 Web and Mobile Programming</h1>
 
-  <div class="container">
+  <div class="container justify-content-md-center">
 
     <nav id="navbar-example2" class="navbar navbar-light bg-light">
       <a class="navbar-brand" href="#">Programmer Survey Form</a>
@@ -124,7 +124,7 @@
                   <button class="btn btn-primary" @click="submitData">Submit Data & View Charts</button>
                 </div>
                 <div class="col-sm-6 text-end">
-                  <button class="btn btn-secondary" @click="loadCharts">View Charts Only</button>
+                  <button class="btn btn-secondary" @click="loadCharts" ref="viewBtn">View Charts Only</button>
                 </div>
               </div>
             </div>
@@ -135,7 +135,7 @@
 
 
 
-      <div id="one" class="row justify-content-md-center section">
+      <div id="one" class="row justify-content-md-center section chart">
         <div class="col col-lg-8">
           <div class="card">
             <div class="card-header text-center">
@@ -158,7 +158,7 @@
       </div>
 
 
-      <div id="two" class="row justify-content-md-center section">
+      <div id="two" class="row justify-content-md-center section chart">
         <div class="col col-lg-8">
           <div class="card">
             <div class="card-header text-center">
@@ -173,7 +173,7 @@
         </div>
       </div>
 
-      <div id="three" class="row justify-content-md-center section">
+      <div id="three" class="row justify-content-md-center section chart">
         <div class="col col-lg-8">
           <div class="card">
             <div class="card-header text-center">
@@ -262,6 +262,10 @@ h1 {
   padding-top: 80px;
 }
 
+.chart{
+ display: none;
+}
+
 .card-header {
   font-variant: small-caps;
 }
@@ -270,9 +274,6 @@ h1 {
   min-height: 15rem;
 }
 
-.chart {
-  /* display: none; */
-}
 
 .input-group-append .input-group-text {
   border-top-left-radius: 0;
@@ -303,51 +304,57 @@ export default {
   },
   
   methods: {
-     submitData () {
-      var fetch_status;
+     async submitData () {
 
-      fetch('/api/submit', {
-          method: "POST",
-          // Set the headers
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          // Set the post data
-          body: JSON.stringify({
-              gender : document.querySelector('input[name="gender"]:checked').value,
-              experience : document.querySelector('input[name="experience"]').value,
-              language : document.querySelector('select[name="language"]').value,
-              windows : document.querySelector('input[name="windows"]').value,
-              linux : document.querySelector('input[name="linux"]').value,
-              macos : document.querySelector('input[name="macos"]').value
-          })
-      })
-      .then(function (response) {
-          // Save the response status in a variable to use later.
-          fetch_status = response.status;
-          // Handle success
-          // eg. Convert the response to JSON and return
-          return response.json();
-      }) 
-      .then(function (json) {
-          // Check if the response were success
-          if (fetch_status == 201) {
-              // Use the converted JSON
-              console.log(json);
-          }
-      })
-      .catch(function (error){
-          // Catch errors
-          console.log(error);
-      }); 
+      if (document.querySelector('input[name="experience"]').value == "") {
+        alert("Please enter your experience.");
+      }
+      else if (document.querySelector('select[name="language"]').value == "") {
+        alert("Please enter your preferred language.");
+      }
+      else {
+        var response = await fetch('/api/submit', {
+            method: "POST",
+            // Set the headers
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            // Set the post data
+            body: JSON.stringify({
+                gender : document.querySelector('input[name="gender"]:checked').value,
+                experience : document.querySelector('input[name="experience"]').value,
+                language : document.querySelector('select[name="language"]').value,
+                windows : document.querySelector('input[name="windows"]').value,
+                linux : document.querySelector('input[name="linux"]').value,
+                macos : document.querySelector('input[name="macos"]').value
+            })
+          });
+
+        if (response.ok) {
+          this.loadCharts();
+          location.hash = "#one";
+        }
+
+
+
+      }
     },
+
 
     loadCharts() {
-      this.loadChartLanguage(false);
-      this.loadChartExperience(false);
-      this.loadChartFamiliarity(false);
+        this.loadChartLanguage(false);
+        this.loadChartExperience();
+        this.loadChartFamiliarity();
+
+        const nodeList = document.querySelectorAll('.chart');
+        for (let i = 0; i < nodeList.length; i++) {
+          nodeList[i].style.display = "block";
+        }
+        
     },
+
+
 
     async loadChartLanguage(update) {
       var filter = document.querySelector('select[name="filter"]').value;
